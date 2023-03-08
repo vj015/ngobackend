@@ -105,6 +105,7 @@ public class Userservice {
 			if(optional.isPresent())
 			{
 				User u = optional.get();
+				u.setRole(null);
 				this.userRepository.delete(u);
 				return 1;
 			}else {
