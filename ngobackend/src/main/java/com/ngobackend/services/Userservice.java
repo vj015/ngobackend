@@ -1,25 +1,41 @@
 package com.ngobackend.services;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ngobackend.dto.UserDTO;
+import com.ngobackend.entities.Role;
 import com.ngobackend.entities.User;
+import com.ngobackend.repository.RoleRepository;
 import com.ngobackend.repository.UserRepository;
 
 @Service
 public class Userservice {
 	
 	@Autowired
+	private PasswordEncoder passwordEncoder;	
+	
+	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	public void addUser(UserDTO userDTO) throws Exception
 	{
 		try {
 			User user = convertuser(userDTO);
+			user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+			Optional<Role> opt = this.roleRepository.findById(2);
+			Set<Role> s = new HashSet<Role>();
+			s.add(opt.get());
+			user.setRole(s);
 			this.userRepository.save(user);
 			
 		} catch (Exception e) {

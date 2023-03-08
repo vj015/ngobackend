@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ public class InternController {
 		}
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/select/{id}/{isnotify}")
 	public ResponseEntity<String> updateselect(@PathVariable("id") Integer id ,@PathVariable("isnotify") Boolean isnotify)
 	{
@@ -58,6 +60,7 @@ public class InternController {
 		}
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Intern> getIntern(@PathVariable("id") Integer id)
 	{
@@ -79,6 +82,7 @@ public class InternController {
 		}
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/")
 	public ResponseEntity<List<Intern>> getAllInterns()
 	{
@@ -100,6 +104,7 @@ public class InternController {
 		}
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/delete/{id}")
 	public ResponseEntity<String> deleteUser(@PathVariable("id") Integer id)
 	{
