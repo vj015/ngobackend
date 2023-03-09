@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.ngobackend.dto.Loggedinuser;
 import com.ngobackend.dto.UserDTO;
 import com.ngobackend.entities.User;
 import com.ngobackend.services.Userservice;
@@ -35,6 +36,21 @@ public class UserController {
 			// TODO: handle exception
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed!");
+		
+		}
+	}
+	
+	@GetMapping("/loggedinuser")
+	public ResponseEntity<Loggedinuser> getloggeduser()
+	{
+		try {
+			Loggedinuser ans = this.userservice.getloggedinuserinfo();
+			return ResponseEntity.status(HttpStatus.OK).body(ans);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		
 		}
 	}

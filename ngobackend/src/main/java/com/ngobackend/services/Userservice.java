@@ -6,9 +6,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ngobackend.dto.Loggedinuser;
 import com.ngobackend.dto.UserDTO;
 import com.ngobackend.entities.Role;
 import com.ngobackend.entities.User;
@@ -26,6 +29,38 @@ public class Userservice {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	
+	public Loggedinuser getloggedinuserinfo()
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String currentPrincipalName = auth.getName();
+       Optional<User> op = this.userRepository.findByCnumber(Long.parseLong(currentPrincipalName));
+       if(op.isPresent())
+       {
+    	   User u = op.get();
+    	   Loggedinuser res = new Loggedinuser();
+    	   res.setId(u.getId());
+    	   res.setLoggedinNumber(currentPrincipalName);
+    	   res.setName(u.getName());
+   		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+		    res.setAuthrole("ADMIN");
+		}
+   		else if(auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_NORMAL")))
+   		{
+   			res.setAuthrole("USER");
+   		}
+   		else {
+   			res.setAuthrole(null);
+   		}
+    	   return res;
+  
+       }
+       
+		
+		return null;
+		
+	}
 	
 	public void addUser(UserDTO userDTO) throws Exception
 	{
@@ -52,6 +87,10 @@ public class Userservice {
 			Optional<User> optional=this.userRepository.findById(id);
 			if(optional.isPresent())
 			{
+				if(this.getloggedinuserinfo().getId()!=id)
+				{
+					throw new Exception("Invalid");
+				}
 				User u = optional.get();
 				u.setAddress(u1.getAddress());
 				u.setCity(u1.getCity());
@@ -79,6 +118,11 @@ public class Userservice {
 	public User findUserByID(int id) throws Exception
 	{
 		try {
+//			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//			String currentPrincipalName = authentication.getName();
+//			System.out.println(this.userRepository.findByCnumber(Long.parseLong(currentPrincipalName)));
+//			System.out.println(currentPrincipalName);
+//			System.out.println(this.getloggedinuserinfo());
 			Optional<User> optional=this.userRepository.findById(id);
 			if(optional.isPresent())
 			{
