@@ -151,19 +151,33 @@ public class FundraiseService {
 		
 	}
 	
-	public int like(int id)throws Exception
+	public int like(int id, boolean isadd)throws Exception
 	{
 		try {
 			Optional<fundraise> optional=this.fundraiseRepository.findById(id);
 			if(optional.isPresent())
 			{
 				fundraise f =optional.get();
-				int ans = f.getLikes() +1;
-				f.setLikes(ans);
-				this.fundraiseRepository.save(f);
-				return ans;
+				 int ans = f.getLikes();
+				 if(isadd==true)
+				 {
+					 ans=ans+1;
+					 f.setLikes(ans);
+				 }
+				 else {
+					 ans=ans-1;
+					 if(ans<=0)
+					 {
+						 f.setLikes(0);
+					 }
+					 else {
+						 f.setLikes(ans);
+					 }
+				 }
+				 this.fundraiseRepository.save(f);
+				 return(ans>=0?ans:0);
 			}
-			return 0;
+			return -1;
 			
 		} catch (Exception e) {
 			// TODO: handle exception

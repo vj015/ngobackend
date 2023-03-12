@@ -63,12 +63,12 @@ public class FundraiseController {
 		}
 	}
     
-	@GetMapping("/like/{id}")
-	public ResponseEntity<Integer> likefundraise(@PathVariable("id") Integer id)
+	@GetMapping("/like/{id}/{isadd}")
+	public ResponseEntity<Integer> likefundraise(@PathVariable("id") Integer id, @PathVariable("isadd") Boolean isadd)
 	{
 		try {
-			int a = this.fundraiseService.like(id);
-			if(a==0) {
+			int a = this.fundraiseService.like(id, isadd);
+			if(a==-1) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 				}
 			else {
