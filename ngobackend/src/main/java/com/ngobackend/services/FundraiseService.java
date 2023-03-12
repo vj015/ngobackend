@@ -192,7 +192,7 @@ public class FundraiseService {
 				return -1;
 			}
 			
-			if(ans==0)
+			if(ans<=0)
 			{
 				this.deletefundraise(id);
 				return 0;
