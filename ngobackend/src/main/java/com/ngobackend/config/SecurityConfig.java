@@ -43,7 +43,7 @@ public class SecurityConfig {
         .csrf()
         .disable()
         .authorizeHttpRequests()
-        .antMatchers("/auth/login","/user/create","/intern/create","/event/").permitAll()
+        .antMatchers("/auth/login","/user/create","/intern/create","/event/","/raisefunds/{id}","/raisefunds/","/raisefunds/donate","/raisefunds/like/{id}","/raisefunds/getdays/{id}").permitAll()
         .anyRequest()
         .authenticated()
         .and()
