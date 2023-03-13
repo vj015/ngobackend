@@ -18,11 +18,17 @@ public class Event {
 	
 	@Column(name = "Content")
 	String content;
+	
+	@Column(name = "Day of Event")
+	String dayofEvent;
 
-	public Event(int id, String content) {
+
+
+	public Event(int id, String content, String dayofEvent) {
 		super();
 		this.id = id;
 		this.content = content;
+		this.dayofEvent = dayofEvent;
 	}
 
 	public Event() {
@@ -45,11 +51,22 @@ public class Event {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	
+
+	public String getDayofEvent() {
+		return dayofEvent;
+	}
+
+	public void setDayofEvent(String dayofEvent) {
+		this.dayofEvent = dayofEvent;
+	}
 
 	@Override
 	public String toString() {
-		return "Event [id=" + id + ", content=" + content + "]";
+		return "Event [id=" + id + ", content=" + content + ", dayofEvent=" + dayofEvent + "]";
 	}
+
+
 
 	
 }
