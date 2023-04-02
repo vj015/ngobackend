@@ -8,7 +8,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,19 +40,38 @@ public class AuthController {
 	@Autowired
 	private jwtUtil JwtUtil;
 	
+	@PostMapping("/verify/{username}")
+	private ResponseEntity<Boolean> verifyUsername(@PathVariable("username") String username )throws Exception
+	{
+		try {
+			this.customUserDetailService.loadUserByUsername(username);
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		} catch (UsernameNotFoundException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+		} catch(Exception e)
+		{
+			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	@PostMapping("/login")
 	public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthRequest jwtAuthRequest) throws Exception
 	{
 		try {
 			this.authenticate(jwtAuthRequest.getUsername(), jwtAuthRequest.getPassword());
 			UserDetails userDetails = this.customUserDetailService.loadUserByUsername(jwtAuthRequest.getUsername());
+			System.out.println(userDetails);
 			String token = this.JwtUtil.generateToken(userDetails);
 			JwtAuthResponse res = new JwtAuthResponse();
 			res.setToken(token);
 			return new ResponseEntity<JwtAuthResponse>(res, HttpStatus.OK);
 			
-		} catch (BadCredentialsException e) {
+		}catch (UsernameNotFoundException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (BadCredentialsException e) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		} catch(Exception e)
 		{
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -25,6 +25,7 @@ public class CustomUserDetailService implements UserDetailsService{
 	} catch (Exception e) {
 		// TODO: handle exception
 		e.printStackTrace();
+		System.out.println("Request is here");
 		throw new UsernameNotFoundException("User name not found");
 	}
 		
